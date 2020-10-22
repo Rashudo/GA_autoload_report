@@ -9,6 +9,7 @@ use Crm_Getter\Classes\CrmParse;
 use Crm_Getter\Classes\DbConnect\PDOHandler;
 use Crm_Getter\Classes\Mail;
 use Exception;
+use stdClass;
 
 class App
 {
@@ -23,6 +24,20 @@ class App
         $this->mailer = new Mail;
     }
 
+    private function envInit()
+    {
+        $file = file_get_contents('../.env');
+        $explode = explode(PHP_EOL, $file);
+        if (count($explode) > 0) {
+            array_map(function ($line) {
+                $data = explode('=', $line);
+                if ($data[0] && $data[1]) {
+                    define(trim($data[0]), trim($data[1]));
+                }
+            }, $explode);
+        }
+    }
+
     public function run()
     {
         if ($this->mailer->status) {
@@ -31,7 +46,7 @@ class App
                 $complete = [];
                 foreach ($this->mailer->getIterator() as $elem) {
                     /**
-                     * @var $elem \stdClass
+                     * @var $elem stdClass
                      * <dl>
                      * <dt>index
                      * <dt>header
@@ -54,27 +69,13 @@ class App
                     $results = (new CrmDataLoad(new PDOHandler, $complete))->saveDataSet();
                 }
 
-                print_r($this->mailer->deleteMessages());
+                die($this->mailer->deleteMessages());
 
             } catch (Exception $e) {
                 die('Error => ' . $e);
             }
         } else {
             die('No connection to mail server');
-        }
-    }
-
-    private function envInit()
-    {
-        $file = file_get_contents('../.env');
-        $explode = explode(PHP_EOL, $file);
-        if (count($explode) > 0) {
-            array_map(function ($line) {
-                $data = explode('=', $line);
-                if ($data[0] && $data[1]) {
-                    define(trim($data[0]), trim($data[1]));
-                }
-            }, $explode);
         }
     }
 }

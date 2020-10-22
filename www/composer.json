@@ -13,8 +13,8 @@
   },
   "require": {
     "ext-json": "*",
-    "ext-imap": "*",
-    "ext-pdo": "*"
+    "ext-pdo": "*",
+    "ext-imap": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
