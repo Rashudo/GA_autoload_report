@@ -1,0 +1,22 @@
+{
+  "name": "ipizza/crm_getter",
+  "config": {
+    "vendor-dir": "vendor"
+  },
+  "autoload": {
+    "psr-4": {
+      "Crm_Getter\\" : "app/"
+    },
+    "require": {
+      "php": ">=7.4.*"
+    }
+  },
+  "require": {
+    "ext-json": "*",
+    "ext-imap": "*",
+    "ext-pdo": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  }
+}
