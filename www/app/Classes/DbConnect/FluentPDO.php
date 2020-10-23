@@ -11,6 +11,11 @@ use PDO;
 use PDOException;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class FluentPDO
+ * use singleton pattern
+ * @package Crm_Getter\Classes\DbConnect
+ */
 class FluentPDO implements DBInterface
 {
     use SingletonTrait;

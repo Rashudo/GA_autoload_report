@@ -6,6 +6,11 @@ namespace Crm_Getter\Classes\Logger\Loggers;
 
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class AbstractLogger
+ * pattern Template Method
+ * @package Crm_Getter\Classes\Logger\Loggers
+ */
 class AbstractLogger implements LoggerInterface
 {
 

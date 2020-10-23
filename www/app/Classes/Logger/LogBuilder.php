@@ -11,6 +11,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Class LogBuilder
+ * pattern builder
  * @package Crm_Getter\Classes\Logger
  */
 final class LogBuilder implements LogBuilderInterface

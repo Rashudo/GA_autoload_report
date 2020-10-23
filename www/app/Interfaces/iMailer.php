@@ -2,6 +2,10 @@
 
 namespace Crm_Getter\Interfaces;
 
+/**
+ * Interface iMailer
+ * @package Crm_Getter\Interfaces
+ */
 interface iMailer
 {
 

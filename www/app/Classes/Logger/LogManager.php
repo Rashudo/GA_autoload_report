@@ -4,9 +4,15 @@
 namespace Crm_Getter\Classes\Logger;
 
 use Crm_Getter\Interfaces\LogBuilderInterface;
+use Crm_Getter\Interfaces\LoggerManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class LogManager
+/**
+ * Class LogManager
+ * pattern director
+ * @package Crm_Getter\Classes\Logger
+ */
+class LogManager implements LoggerManagerInterface
 {
     /**
      * @var LogBuilderInterface

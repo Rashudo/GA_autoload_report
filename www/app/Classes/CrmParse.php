@@ -3,7 +3,10 @@
 
 namespace Crm_Getter\Classes;
 
-
+/**
+ * Class CrmParse
+ * @package Crm_Getter\Classes
+ */
 class CrmParse
 {
 
@@ -29,7 +32,7 @@ class CrmParse
             $i = 0;
             foreach ($matches as $match) {
                 $explode = explode(',', $match);
-                if ($explode[0] > 0) {
+                if (count($explode) > 0 && $explode[0] > 0) {
                     $result[$i]['order_id'] = $explode[0];
                     $result[$i]['adv'] = $explode[1];
                     $result[$i]['channel'] = $explode[2];

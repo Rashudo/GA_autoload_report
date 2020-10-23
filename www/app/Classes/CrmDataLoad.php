@@ -5,8 +5,12 @@ namespace Crm_Getter\Classes;
 
 
 use Crm_Getter\Interfaces\DBInterface;
-use Envms\FluentPDO\Exception;
+use Exception;
 
+/**
+ * Class CrmDataLoad
+ * @package Crm_Getter\Classes
+ */
 class CrmDataLoad
 {
     /**
@@ -35,7 +39,9 @@ class CrmDataLoad
         $results = [];
         try {
             foreach ($this->data as $line) {
-                $results[] = $query = $this->db->getConnection()
+                $results[] = $query = $this
+                    ->db
+                    ->getConnection()
                     ->insertInto('crm_ga',
                         [
                             'order_id' => $line['order_id'],
@@ -45,7 +51,7 @@ class CrmDataLoad
                     )
                     ->execute();
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             die($e);
         }
         return $results;

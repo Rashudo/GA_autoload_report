@@ -3,7 +3,10 @@
 
 namespace Crm_Getter\Traits;
 
-
+/**
+ * Trait SingletonTrait
+ * @package Crm_Getter\Traits
+ */
 trait SingletonTrait
 {
 

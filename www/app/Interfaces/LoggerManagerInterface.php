@@ -3,8 +3,17 @@
 
 namespace Crm_Getter\Interfaces;
 
+use Psr\Log\LoggerInterface;
 
-class LoggerManagerInterface
+/**
+ * Class LoggerManagerInterface
+ * @package Crm_Getter\Interfaces
+ */
+interface LoggerManagerInterface
 {
 
+    /**
+     * @return LoggerInterface
+     */
+    public function consoleLogger(): LoggerInterface;
 }

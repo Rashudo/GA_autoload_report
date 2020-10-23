@@ -3,7 +3,10 @@
 
 namespace Crm_Getter\Classes\Logger\Loggers;
 
-
+/**
+ * Class ConsoleLogger
+ * @package Crm_Getter\Classes\Logger\Loggers
+ */
 class ConsoleLogger extends AbstractLogger
 {
 

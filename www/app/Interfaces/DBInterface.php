@@ -6,6 +6,10 @@ namespace Crm_Getter\Interfaces;
 
 use Envms\FluentPDO\Query;
 
+/**
+ * Interface DBInterface
+ * @package Crm_Getter\Interfaces
+ */
 interface DBInterface
 {
 

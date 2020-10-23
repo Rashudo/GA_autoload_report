@@ -13,6 +13,10 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use stdClass;
 
+/**
+ * Class App
+ * @package Crm_Getter
+ */
 class App
 {
     /**
@@ -25,13 +29,19 @@ class App
      */
     private LoggerInterface $logger;
 
+    /**
+     * App constructor.
+     */
     public function __construct()
     {
         $this->logger = (new LogManager)->consoleLogger();
-        $this->envInit();
         $this->mailer = new Mail($this->logger);
+        $this->envInit();
     }
 
+    /**
+     * Init const from .env file
+     */
     private function envInit()
     {
         $file = file_get_contents('../.env');
@@ -49,6 +59,9 @@ class App
         }
     }
 
+    /**
+     * Run application. Enter point
+     */
     public function run()
     {
         if ($this->mailer->status) {
