@@ -16,13 +16,9 @@ RUN apt-get install -y libc-client-dev libkrb5-dev && \
         docker-php-ext-install imap
 
 RUN docker-php-ext-install pdo pdo_mysql mysqli
-#RUN pecl install mailparse
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www
-
-
-#CMD ["php-fpm"]
 
 CMD bash -c "composer install && php-fpm"
