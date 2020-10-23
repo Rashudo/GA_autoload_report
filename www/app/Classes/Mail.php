@@ -5,6 +5,7 @@ namespace Crm_Getter\Classes;
 use ArrayIterator;
 use Crm_Getter\Interfaces\iMailer;
 use IteratorAggregate;
+use Psr\Log\LoggerInterface;
 use stdClass;
 
 class Mail implements iMailer, IteratorAggregate
@@ -31,18 +32,37 @@ class Mail implements iMailer, IteratorAggregate
     private int $msg_cnt = 0;
 
     /**
-     * Mail constructor.
+     * @var LoggerInterface
      */
-    public function __construct()
+    private LoggerInterface $logger;
+
+    /**
+     * Mail constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
     {
-        $this->connect();
+        $this->logger = $logger;
+        try {
+            $this->connect();
+        } catch (\Error $error) {
+            $this->logger->notice('no connection to mail server');
+        }
         if (is_resource($this->conn)) {
-            $this->msg_cnt = imap_num_msg($this->conn);
+            $this->setCnt(imap_num_msg($this->conn));
             if ($this->msg_cnt > 0) {
-                $this->setInbox();
+                $this->fillInbox();
             }
             $this->status = true;
         }
+    }
+
+    /**
+     * Mail destructor.
+     */
+    public function __destruct()
+    {
+        $this->closeConnection();
     }
 
     /**
@@ -56,9 +76,88 @@ class Mail implements iMailer, IteratorAggregate
     }
 
     /**
+     * @param stdClass $mail
+     */
+    public function setInbox(stdClass $mail)
+    {
+        $this->inbox[$mail->index] = $mail;
+    }
+
+    /**
+     * @return iterable
+     */
+    public function getIterator(): iterable
+    {
+        return new ArrayIterator($this->inbox);
+    }
+
+    /**
      *
      */
-    private function setInbox()
+    public function closeConnection(): void
+    {
+        $this->inbox = array();
+        $this->msg_cnt = 0;
+        try {
+            imap_close($this->conn);
+        } catch (\Error $error) {
+            $this->logger->error('no connection to mail server');
+        }
+
+    }
+
+    /**
+     * @return int
+     */
+    public function getCnt(): int
+    {
+        return $this->msg_cnt;
+    }
+
+    /**
+     * @param int $msg_cnt
+     */
+    public function setCnt(int $msg_cnt)
+    {
+        $this->msg_cnt = $msg_cnt;
+    }
+
+    /**
+     * @param int $msg_index
+     * @return stdClass
+     */
+    public function getMail(int $msg_index): stdClass
+    {
+        $return = new stdClass;
+        if (count($this->inbox) >= $msg_index) {
+            $return = $this->inbox[$msg_index];
+        }
+        return $return;
+    }
+
+    /**
+     * @param int $msg_index
+     * @return bool
+     */
+    public function setForDelete(int $msg_index): bool
+    {
+        return imap_delete($this->conn, $msg_index);
+    }
+
+    /**
+     * @return bool
+     */
+    public function deleteMessages(): bool
+    {
+        $result = imap_expunge($this->conn);
+        $this->fillInbox();
+        return $result;
+    }
+
+    /**
+     *
+     */
+    private function fillInbox()
     {
         for ($m = 1; $m <= $this->msg_cnt; $m++) {
             $mail = new stdClass();
@@ -101,70 +200,9 @@ class Mail implements iMailer, IteratorAggregate
                         ++$i;
                     }
                 }
-                $this->inbox[] = $mail;
+                $this->setInbox($mail);
             }
         }
-    }
-
-    /**
-     * @return iterable
-     */
-    public function getIterator(): iterable
-    {
-        return new ArrayIterator($this->inbox);
-    }
-
-    public function __destruct()
-    {
-        $this->closeConnection();
-    }
-
-    public function closeConnection()
-    {
-        $this->inbox = array();
-        $this->msg_cnt = 0;
-
-        imap_close($this->conn);
-    }
-
-    /**
-     * @return int
-     */
-    public function getCnt(): int
-    {
-        return $this->msg_cnt;
-    }
-
-    /**
-     * @param int $msg_index
-     * @return array
-     */
-        public function getMail(int $msg_index): array
-    {
-        $return = [];
-        if (count($this->inbox) >= $msg_index) {
-            $return = $this->inbox[$msg_index];
-        }
-        return $return;
-    }
-
-    /**
-     * @param int $msg_index
-     * @return bool
-     */
-    public function setForDelete(int $msg_index): bool
-    {
-        return imap_delete($this->conn, $msg_index);
-    }
-
-    /**
-     * @return bool
-     */
-    public function deleteMessages(): bool
-    {
-        $result = imap_expunge($this->conn);
-        $this->setInbox();
-        return $result;
     }
 
 }

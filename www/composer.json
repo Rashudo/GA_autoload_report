@@ -5,7 +5,8 @@
   },
   "autoload": {
     "psr-4": {
-      "Crm_Getter\\" : "app/"
+      "Crm_Getter\\" : "app/",
+      "test\\" : "test/"
     },
     "require": {
       "php": ">=7.4.*"
@@ -14,9 +15,14 @@
   "require": {
     "ext-json": "*",
     "ext-pdo": "*",
-    "ext-imap": "*"
+    "envms/fluentpdo": "^2.2.0",
+    "ext-imap": "*",
+    "psr/log": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"
+  },
+  "provide": {
+    "psr/log-implementation": "*"
   }
 }

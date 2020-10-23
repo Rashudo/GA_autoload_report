@@ -4,13 +4,14 @@
 namespace Crm_Getter\Interfaces;
 
 
+use Envms\FluentPDO\Query;
+
 interface DBInterface
 {
 
     /**
-     * @param string $query
-     * @param array $selectors
-     * @return int
+     * @return Query
+     * @throws \Exception
      */
-    public function insert(string $query, array $selectors = []): int;
+    public function getConnection(): object;
 }

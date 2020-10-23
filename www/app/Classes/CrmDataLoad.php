@@ -5,6 +5,7 @@ namespace Crm_Getter\Classes;
 
 
 use Crm_Getter\Interfaces\DBInterface;
+use Envms\FluentPDO\Exception;
 
 class CrmDataLoad
 {
@@ -32,13 +33,20 @@ class CrmDataLoad
     public function saveDataSet(): array
     {
         $results = [];
-        $query = 'INSERT INTO crm_ga (order_id,channel,adv) VALUES (:order_id,:channel,:adv)';
-        foreach ($this->data as $line) {
-            $results[] = $this->db->insert($query, [
-                ':order_id' => $line['order_id'],
-                ':channel' => $line['channel'],
-                ':adv' => $line['adv']
-            ]);
+        try {
+            foreach ($this->data as $line) {
+                $results[] = $query = $this->db->getConnection()
+                    ->insertInto('crm_ga',
+                        [
+                            'order_id' => $line['order_id'],
+                            'channel' => $line['channel'],
+                            'adv' => $line['adv']
+                        ]
+                    )
+                    ->execute();
+            }
+        } catch (\Exception $e) {
+            die($e);
         }
         return $results;
     }

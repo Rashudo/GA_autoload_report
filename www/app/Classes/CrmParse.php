@@ -29,7 +29,7 @@ class CrmParse
             $i = 0;
             foreach ($matches as $match) {
                 $explode = explode(',', $match);
-                if ($explode[0] > 3000000) {
+                if ($explode[0] > 0) {
                     $result[$i]['order_id'] = $explode[0];
                     $result[$i]['adv'] = $explode[1];
                     $result[$i]['channel'] = $explode[2];

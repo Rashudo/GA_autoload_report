@@ -22,7 +22,7 @@ interface iMailer
 
     /**
      * @param int $msg_index
-     * @return array
+     * @return \stdClass
      */
-    public function getMail(int $msg_index): array;
+    public function getMail(int $msg_index): \stdClass;
 }

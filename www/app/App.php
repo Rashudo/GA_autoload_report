@@ -6,9 +6,11 @@ namespace Crm_Getter;
 
 use Crm_Getter\Classes\CrmDataLoad;
 use Crm_Getter\Classes\CrmParse;
-use Crm_Getter\Classes\DbConnect\PDOHandler;
+use Crm_Getter\Classes\DbConnect\FluentPDO;
+use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Classes\Mail;
 use Exception;
+use Psr\Log\LoggerInterface;
 use stdClass;
 
 class App
@@ -18,10 +20,16 @@ class App
      */
     private Mail $mailer;
 
+    /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
     public function __construct()
     {
+        $this->logger = (new LogManager)->consoleLogger();
         $this->envInit();
-        $this->mailer = new Mail;
+        $this->mailer = new Mail($this->logger);
     }
 
     private function envInit()
@@ -32,7 +40,10 @@ class App
             array_map(function ($line) {
                 $data = explode('=', $line);
                 if ($data[0] && $data[1]) {
-                    define(trim($data[0]), trim($data[1]));
+                    $const = trim($data[0]);
+                    if (!defined($const)) {
+                        define($const, trim($data[1]));
+                    }
                 }
             }, $explode);
         }
@@ -66,9 +77,10 @@ class App
                     $this->mailer->setForDelete($elem->index);
                 }
                 if (count($complete) > 0) {
-                    $results = (new CrmDataLoad(new PDOHandler, $complete))->saveDataSet();
+                    $pdo = FluentPDO::getInstance();
+                    $pdo->run($this->logger);
+                    $results = (new CrmDataLoad($pdo, $complete))->saveDataSet();
                 }
-
                 die($this->mailer->deleteMessages());
 
             } catch (Exception $e) {
