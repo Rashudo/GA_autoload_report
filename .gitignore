@@ -2,3 +2,5 @@
 /www/composer.phar
 /www/vendor/
 /.idea/
+/www/composer.lock
+/.phpunit.result.cache
