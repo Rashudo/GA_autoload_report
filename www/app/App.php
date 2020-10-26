@@ -6,7 +6,7 @@ namespace Crm_Getter;
 
 use Crm_Getter\Classes\CrmDataLoad;
 use Crm_Getter\Classes\CrmParse;
-use Crm_Getter\Classes\DbConnect\FluentPDO;
+use Crm_Getter\Classes\DbConnect\DoctrineHandler;
 use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Classes\Mail;
 use Exception;
@@ -34,9 +34,9 @@ class App
      */
     public function __construct()
     {
+        $this->envInit();
         $this->logger = (new LogManager)->consoleLogger();
         $this->mailer = new Mail($this->logger);
-        $this->envInit();
     }
 
     /**
@@ -67,7 +67,10 @@ class App
         if ($this->mailer->status) {
             try {
                 $parser = new CrmParse;
+                $dataLoader = new CrmDataLoad(new DoctrineHandler($this->logger), $this->logger);
                 $complete = [];
+                $results = [];
+
                 foreach ($this->mailer->getIterator() as $elem) {
                     /**
                      * @var $elem stdClass
@@ -90,12 +93,14 @@ class App
                     $this->mailer->setForDelete($elem->index);
                 }
                 if (count($complete) > 0) {
-                    $pdo = FluentPDO::getInstance();
-                    $pdo->run($this->logger);
-                    $results = (new CrmDataLoad($pdo, $complete))->saveDataSet();
+                    $results = $dataLoader->saveDataSet($complete);
                 }
-                die($this->mailer->deleteMessages());
-
+                if (!(!$results || in_array(0, $results))) {
+                    echo 'Сохранено';
+                    $this->mailer->deleteMessages();
+                } else {
+                    echo 'Не сохранено';
+                }
             } catch (Exception $e) {
                 die('Error => ' . $e);
             }

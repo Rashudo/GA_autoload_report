@@ -17,7 +17,8 @@
     "ext-pdo": "*",
     "envms/fluentpdo": "^2.2.0",
     "ext-imap": "*",
-    "psr/log": "*"
+    "psr/log": "*",
+    "doctrine/orm": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "*"

@@ -4,8 +4,10 @@
 namespace Crm_Getter\Classes;
 
 
-use Crm_Getter\Interfaces\DBInterface;
+use Crm_Getter\Interfaces\DbInterface;
+use Crm_Getter\src\Crm;
 use Exception;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class CrmDataLoad
@@ -14,44 +16,40 @@ use Exception;
 class CrmDataLoad
 {
     /**
-     * @var array
-     */
-    private array $data = [];
-
-    /**
      * @var DBInterface
      */
     private DBInterface $db;
 
     /**
+     * @var LoggerInterface
+     */
+    private LoggerInterface $logger;
+
+    /**
      * CrmDataLoad constructor.
      * @param DBInterface $dbHandler
-     * @param array $data
+     * @param LoggerInterface $logger
      */
-    public function __construct(DBInterface $dbHandler, array $data)
+    public function __construct(DbInterface $dbHandler, LoggerInterface $logger)
     {
         $this->db = $dbHandler;
-        $this->data = $data;
+        $this->logger = $logger;
     }
 
-    public function saveDataSet(): array
+    public function saveDataSet(array $data): array
     {
         $results = [];
         try {
-            foreach ($this->data as $line) {
-                $results[] = $query = $this
-                    ->db
-                    ->getConnection()
-                    ->insertInto('crm_ga',
-                        [
-                            'order_id' => $line['order_id'],
-                            'channel' => $line['channel'],
-                            'adv' => $line['adv']
-                        ]
-                    )
-                    ->execute();
+            foreach ($data as $line) {
+                $obj = new Crm;
+                $obj->setOrderId($line['order_id']);
+                $obj->setChannel($line['channel']);
+                $obj->setAdv($line['adv']);
+                $this->db->saveData($obj);
+                $results[] = $obj->getOrderId() > 0;
             }
         } catch (Exception $e) {
+            $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
             die($e);
         }
         return $results;

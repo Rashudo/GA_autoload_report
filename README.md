@@ -28,5 +28,8 @@
   
   - Run Docker-compose
   
+  - Create table crm_ga (order_id, channel, adv). 
+    Or Use vendor/bin/doctrine orm:schema-tool:update --force on crm_getter_php
+  
   - Service available on localhost:8080 port (You can change it in docker-composer.yml)
    

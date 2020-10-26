@@ -3,7 +3,7 @@
 namespace Crm_Getter\Classes;
 
 use ArrayIterator;
-use Crm_Getter\Interfaces\iMailer;
+use Crm_Getter\Interfaces\MailInterface;
 use Error;
 use IteratorAggregate;
 use Psr\Log\LoggerInterface;
@@ -13,7 +13,7 @@ use stdClass;
  * Class Mail
  * @package Crm_Getter\Classes
  */
-class Mail implements iMailer, IteratorAggregate
+class Mail implements MailInterface, IteratorAggregate
 {
     /**
      * @var bool
