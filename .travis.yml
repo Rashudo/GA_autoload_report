@@ -2,8 +2,8 @@ language: php
 
 php:
   - "7.4"
-before_script:
-  cd ./www/
+  
+before_install: cd www
 
 install:
   - composer install
