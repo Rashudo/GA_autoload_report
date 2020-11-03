@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Crm_Getter\Classes\Logger\Loggers;
 
 /**

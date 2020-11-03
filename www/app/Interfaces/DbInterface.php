@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Crm_Getter\Interfaces;
-
 
 interface DbInterface
 {

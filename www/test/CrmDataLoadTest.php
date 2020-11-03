@@ -15,7 +15,7 @@ class CrmDataLoadTest extends AbstractClass
         private $model;
 
     /**
-     * @var DBInterface|__anonymous@434
+     * @var object
      */
     private $dbHandler;
 
@@ -23,25 +23,15 @@ class CrmDataLoadTest extends AbstractClass
     {
         parent::__construct($name, $data, $dataName);
         $this->dbHandler = new class implements DBInterface{
-            /**
-             * @return object
-             */
-            public function getConnection(): object
+            public function saveData(object $object): void
             {
-                return new class {
-                    public function insertInto(string $table, array $array) {
-                        return $this;
-                    }
-                    public function execute() {
-                        return true;
-                    }
-                };
+                // TODO: Implement saveData() method.
             }
         };
     }
 
 
-    public function testSaveDataSet()
+    public function testSaveDataSet(): void
     {
 
         $data = [
@@ -56,9 +46,9 @@ class CrmDataLoadTest extends AbstractClass
                 'adv' => null
             ]
         ];
-        $this->model = new CrmDataLoad($this->dbHandler, $data);
+        $this->model = new CrmDataLoad($this->dbHandler);
 
-        $results = $this->model->saveDataSet();
+        $results = $this->model->saveDataSet($data);
         $this->assertIsArray($results);
         $this->assertContainsEquals(1, $results);
         $this->assertEquals([true, true], $results);

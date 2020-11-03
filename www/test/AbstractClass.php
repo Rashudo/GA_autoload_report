@@ -15,7 +15,7 @@ class AbstractClass extends TestCase
         $this->initConst();
     }
 
-    private function initConst()
+    private function initConst(): void
     {
         $file = file_get_contents(str_replace('test', '', __DIR__) . '.env');
         $explode = explode(PHP_EOL, $file);

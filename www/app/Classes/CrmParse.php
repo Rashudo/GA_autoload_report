@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Crm_Getter\Classes;
 
 /**
@@ -16,15 +15,17 @@ class CrmParse
     public string $data = '';
 
 
-    public function setData(string $data)
+    public function setData(string $data): void
     {
         $this->data = $data;
     }
 
     /**
-     * @return array
+     * @return string[][]
+     *
+     * @psalm-return array<0|positive-int, array{order_id: string, adv: string, channel: string}>
      */
-    public function getDataSet()
+    public function getDataSet(): array
     {
         $result = [];
         $matches = preg_split('/\n/', $this->data);
@@ -32,7 +33,7 @@ class CrmParse
             $i = 0;
             foreach ($matches as $match) {
                 $explode = explode(',', $match);
-                if (count($explode) > 0 && $explode[0] > 0) {
+                if ($explode && $explode[0] > 0) {
                     $result[$i]['order_id'] = $explode[0];
                     $result[$i]['adv'] = $explode[1];
                     $result[$i]['channel'] = $explode[2];

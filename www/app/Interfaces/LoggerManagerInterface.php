@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Crm_Getter\Interfaces;
 
 use Psr\Log\LoggerInterface;
@@ -15,5 +14,5 @@ interface LoggerManagerInterface
     /**
      * @return LoggerInterface
      */
-    public function consoleLogger(): LoggerInterface;
+    public static function getLogger(): LoggerInterface;
 }

@@ -1,9 +1,8 @@
 <?php
 
-
 namespace Crm_Getter\Classes;
 
-
+use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Interfaces\DbInterface;
 use Crm_Getter\src\Crm;
 use Exception;
@@ -30,18 +29,23 @@ class CrmDataLoad
      * @param DBInterface $dbHandler
      * @param LoggerInterface $logger
      */
-    public function __construct(DbInterface $dbHandler, LoggerInterface $logger)
+    public function __construct(DbInterface $dbHandler)
     {
         $this->db = $dbHandler;
-        $this->logger = $logger;
+        $this->logger = $this->logger = LogManager::getLogger();
     }
 
+    /**
+     * @return bool[]
+     *
+     * @psalm-return list<bool>
+     */
     public function saveDataSet(array $data): array
     {
         $results = [];
         try {
             foreach ($data as $line) {
-                $obj = new Crm;
+                $obj = new Crm();
                 $obj->setOrderId($line['order_id']);
                 $obj->setChannel($line['channel']);
                 $obj->setAdv($line['adv']);
@@ -50,7 +54,7 @@ class CrmDataLoad
             }
         } catch (Exception $e) {
             $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
-            die($e);
+            die($e->getMessage());
         }
         return $results;
     }

@@ -1,12 +1,11 @@
 <?php
 
-
 namespace Crm_Getter\Classes\Logger;
-
 
 use Crm_Getter\Classes\Logger\Loggers\ConsoleLogger;
 use Crm_Getter\Classes\Logger\Loggers\FileLogger;
 use Crm_Getter\Interfaces\LogBuilderInterface;
+use Crm_Getter\Traits\SingletonTrait;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -16,11 +15,12 @@ use Psr\Log\LoggerInterface;
  */
 final class LogBuilder implements LogBuilderInterface
 {
+    use SingletonTrait;
 
     /**
      * @var LoggerInterface
      */
-    private $logModel;
+    private ?LoggerInterface $logModel = null;
 
     /**
      * @return LoggerInterface
@@ -32,7 +32,7 @@ final class LogBuilder implements LogBuilderInterface
 
 
     /**
-     * @return LogBuilderInterface
+     * @return self
      */
     public function setConsoleModel(): LogBuilderInterface
     {
@@ -43,7 +43,7 @@ final class LogBuilder implements LogBuilderInterface
 
 
     /**
-     * @return LogBuilderInterface
+     * @return self
      */
     public function setFileModel(): LogBuilderInterface
     {
@@ -51,6 +51,4 @@ final class LogBuilder implements LogBuilderInterface
 
         return $this;
     }
-
-
 }

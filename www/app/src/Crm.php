@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Crm_Getter\src;
-
 
 use Doctrine\ORM\Mapping\{
     Column,
@@ -20,45 +18,58 @@ class Crm
 
     /**
      * @Id
-     * @Column(type="integer")
+     *
+     * @Column (type="integer")
+     *
+     * @var int
      */
-    private $order_id;
+    private $order_id = 0;
 
     /**
-     * @Column(nullable=true)
+     * @Column (nullable=true)
+     *
+     * @var string
      */
-    private $channel;
+    private ?string $channel = null;
 
     /**
-     * @Column(nullable=true)
+     * @Column (nullable=true)
+     *
+     * @var string
      */
-    private $adv;
+    private ?string $adv = null;
 
-    public function getOrderId()
+    public function getOrderId(): int
     {
-        return $this->order_id ?? 0;
+        return intval($this->order_id);
     }
 
     /**
-     * @param $id
+     * @param int $id
+     *
+     * @return void
      */
-    public function setOrderId($id)
+    public function setOrderId(int $id): void
     {
-        $this->order_id = intval($id);
+        $this->order_id = $id;
     }
 
     /**
      * @param string $channel
+     *
+     * @return void
      */
-    public function setChannel(string $channel)
+    public function setChannel(string $channel): void
     {
         $this->channel = trim($channel);
     }
 
     /**
      * @param string $channel
+     *
+     * @return void
      */
-    public function setAdv(string $adv)
+    public function setAdv(string $adv): void
     {
         $this->adv = trim($adv);
     }

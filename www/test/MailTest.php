@@ -22,7 +22,7 @@ class MailTest extends AbstractClass
     }
 
 
-    public function testGetMail()
+    public function testGetMail(): void
     {
         $this->model = new Mail;
 
@@ -41,7 +41,7 @@ class MailTest extends AbstractClass
     }
 
 
-    public static function getStubMail()
+    public static function getStubMail(): \stdClass
     {
         $mail = new \stdClass();
         $mail->index = 1;

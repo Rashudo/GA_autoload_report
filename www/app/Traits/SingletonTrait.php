@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Crm_Getter\Traits;
 
 /**
@@ -11,17 +10,16 @@ trait SingletonTrait
 {
 
     /**
-     * @var static
+     * @var self
      */
-    private static $_instance;
+    private static $instance = null;
 
     /**
      * forbid create
      * SingletonTrait constructor.
      */
-    public function __construct()
+    private function __construct()
     {
-
     }
 
     /**
@@ -29,27 +27,23 @@ trait SingletonTrait
      */
     public static function getInstance()
     {
-        if (null === static::$_instance) {
-            static::$_instance = new self();
+        if (!static::$instance) {
+            static::$instance = new self();
         }
-        return static::$_instance;
+        return static::$instance;
     }
 
     /**
      * forbid clone
      */
-    public function __clone()
+    private function __clone()
     {
-
     }
 
     /**
      * forbid deserialize
      */
-    public function __wakeup()
+    private function __wakeup()
     {
-
     }
-
-    abstract public function run();
 }

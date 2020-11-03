@@ -12,17 +12,12 @@ interface MailInterface
     /**
      * @return void
      */
-    public function connect(): void ;
+    public function connect(): void;
 
     /**
      * @return mixed
      */
     public function closeConnection();
-
-    /**
-     * @return int
-     */
-    public function getCnt(): int;
 
     /**
      * @param int $msg_index

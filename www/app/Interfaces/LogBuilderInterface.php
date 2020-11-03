@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Crm_Getter\Interfaces;
 
-
 use Psr\Log\LoggerInterface;
-
 
 /**
  * Interface LogBuilderInterface
@@ -23,9 +20,4 @@ interface LogBuilderInterface
      * @return LogBuilderInterface
      */
     public function setConsoleModel(): LogBuilderInterface;
-
-    /**
-     * @return LogBuilderInterface
-     */
-    public function setFileModel(): LogBuilderInterface;
 }

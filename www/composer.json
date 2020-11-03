@@ -15,13 +15,14 @@
   "require": {
     "ext-json": "*",
     "ext-pdo": "*",
-    "envms/fluentpdo": "^2.2.0",
-    "ext-imap": "*",
     "psr/log": "*",
-    "doctrine/orm": "*"
+    "doctrine/orm": "*",
+    "ext-imap": "*"
   },
   "require-dev": {
-    "phpunit/phpunit": "*"
+    "phpunit/phpunit": "*",
+    "vimeo/psalm": "^4.1",
+    "squizlabs/php_codesniffer": "3.*"
   },
   "provide": {
     "psr/log-implementation": "*"

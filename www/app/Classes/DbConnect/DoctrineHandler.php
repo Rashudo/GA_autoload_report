@@ -1,8 +1,8 @@
 <?php
 
-
 namespace Crm_Getter\Classes\DbConnect;
 
+use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Interfaces\DbInterface;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -18,11 +18,6 @@ class DoctrineHandler implements DbInterface
     public ?EntityManager $entityManager;
 
     /**
-     * @var null | object
-     */
-    public ?object $model = null;
-
-    /**
      * @var LoggerInterface
      */
     private LoggerInterface $logger;
@@ -31,17 +26,17 @@ class DoctrineHandler implements DbInterface
      * DoctrineHandler constructor.
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
+        $this->logger = $this->logger = LogManager::getLogger();
 
         $paths = array("/var/www/app/src");
         $dbParams = array(
             'driver' => 'pdo_mysql',
-            'user' => DB_LOGIN,
-            'password' => DB_PASS,
-            'dbname' => DB_NAME,
-            'host' => DB_HOST
+            'user' => getenv('DB_LOGIN'),
+            'password' => getenv('DB_PASS'),
+            'dbname' => getenv('DB_NAME'),
+            'host' => getenv('DB_HOST')
         );
 
         $config = Setup::createAnnotationMetadataConfiguration($paths, true);
@@ -66,7 +61,6 @@ class DoctrineHandler implements DbInterface
             $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
             die('ORM Error ' . $e);
         }
+        $this->logger->error('ERROR');
     }
-
-
 }

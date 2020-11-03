@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Crm_Getter\Classes\Logger\Loggers;
 
 /**
@@ -21,7 +20,7 @@ class ConsoleLogger extends AbstractLogger
         $this->commonError(__METHOD__, $message, $context);
     }
 
-    private function commonError(string $type, $message, array $context = array())
+    private function commonError(string $type, string $message, array $context = array()): void
     {
         error_log('==============');
         error_log($type . '. ' . $message);

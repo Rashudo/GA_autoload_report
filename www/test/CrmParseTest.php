@@ -20,7 +20,7 @@ class CrmParseTest extends AbstractClass
         parent::__construct($name, $data, $dataName);
     }
 
-    public function testSaveDataSet()
+    public function testSaveDataSet(): void
     {
 
         $data = <<<EOT

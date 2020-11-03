@@ -21,4 +21,5 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 WORKDIR /var/www
 
-CMD bash -c "composer install && php-fpm"
+
+CMD bash -c "source /var/www/.env && composer install && php-fpm"

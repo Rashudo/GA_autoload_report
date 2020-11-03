@@ -3,6 +3,7 @@
 namespace Crm_Getter\Classes;
 
 use ArrayIterator;
+use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Interfaces\MailInterface;
 use Error;
 use IteratorAggregate;
@@ -45,9 +46,9 @@ class Mail implements MailInterface, IteratorAggregate
      * Mail constructor.
      * @param LoggerInterface $logger
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct()
     {
-        $this->logger = $logger;
+        $this->logger = $this->logger = LogManager::getLogger();
         try {
             $this->connect();
         } catch (Error $error) {
@@ -69,72 +70,77 @@ class Mail implements MailInterface, IteratorAggregate
      */
     public function connect(): void
     {
-        $this->conn = imap_open('{' . MAIL_SERVER . '/notls}Inbox', MAIL_USER, MAIL_PASS);
+        $this->conn = imap_open('{' . getenv('MAIL_SERVER') . '/notls}Inbox', getenv('MAIL_USER'), getenv('MAIL_PASS'));
     }
 
     /**
      * @param int $msg_cnt
+     *
+     * @return void
      */
-    public function setCnt(int $msg_cnt)
+    public function setCnt(int $msg_cnt): void
     {
         $this->msg_cnt = $msg_cnt;
     }
 
     /**
-     *
+     * @return void
      */
-    private function fillInbox()
+    private function fillInbox(): void
     {
-        for ($m = 1; $m <= $this->msg_cnt; $m++) {
-            $mail = new stdClass();
-            $mail->index = $m;
+        if ($this->conn) {
+            for ($m = 1; $m <= $this->msg_cnt; $m++) {
+                $mail = new stdClass();
+                $mail->index = $m;
 
-            $mail->header = @imap_headerinfo($this->conn, $m);
-            $mail->structure = @imap_fetchstructure($this->conn, $m);
-            if (is_object($mail->header) && is_object($mail->structure)) {
-                $mail->attachments = [];
-                if (isset($mail->structure->parts) && count($mail->structure->parts)) {
-                    $i = 0;
-                    $is_attachment = false;
-                    while ($i < count($mail->structure->parts)) {
-
-                        if ($mail->structure->parts[$i]->ifdparameters) {
-                            foreach ($mail->structure->parts[$i]->dparameters as $object) {
-                                if (strtolower($object->attribute) == 'filename') {
-                                    $is_attachment = true;
-                                    break;
+                $mail->header = @imap_headerinfo($this->conn, $m);
+                $mail->structure = @imap_fetchstructure($this->conn, $m);
+                if (is_object($mail->header) && is_object($mail->structure)) {
+                    $mail->attachments = [];
+                    if (isset($mail->structure->parts) && count($mail->structure->parts)) {
+                        $i = 0;
+                        $is_attachment = false;
+                        while ($i < count($mail->structure->parts)) {
+                            if ($mail->structure->parts[$i]->ifdparameters) {
+                                foreach ($mail->structure->parts[$i]->dparameters as $object) {
+                                    if (strtolower($object->attribute) == 'filename') {
+                                        $is_attachment = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if ($mail->structure->parts[$i]->ifparameters) {
-                            foreach ($mail->structure->parts[$i]->parameters as $object) {
-                                if (strtolower($object->attribute) == 'name') {
-                                    $is_attachment = true;
-                                    break;
+                            if ($mail->structure->parts[$i]->ifparameters) {
+                                foreach ($mail->structure->parts[$i]->parameters as $object) {
+                                    if (strtolower($object->attribute) == 'name') {
+                                        $is_attachment = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if ($is_attachment) {
-                            $attachment = imap_fetchbody($this->conn, $m, $i + 1);
-                            if ($mail->structure->parts[$i]->encoding == 3) {
-                                $attachment = base64_decode($attachment);
-                            } elseif ($mail->structure->parts[$i]->encoding == 4) {
-                                $attachment = quoted_printable_decode($attachment);
+                            if ($is_attachment) {
+                                $attachment = imap_fetchbody($this->conn, $m, strval($i + 1));
+                                if ($mail->structure->parts[$i]->encoding == 3) {
+                                    $attachment = base64_decode($attachment);
+                                } elseif ($mail->structure->parts[$i]->encoding == 4) {
+                                    $attachment = quoted_printable_decode($attachment);
+                                }
+                                $mail->attachments[] = $attachment;
                             }
-                            $mail->attachments[] = $attachment;
+                            ++$i;
                         }
-                        ++$i;
                     }
+                    $this->setInbox($mail);
                 }
-                $this->setInbox($mail);
             }
         }
     }
 
     /**
      * @param stdClass $mail
+     *
+     * @return void
      */
-    public function setInbox(stdClass $mail)
+    public function setInbox(stdClass $mail): void
     {
         $this->inbox[$mail->index] = $mail;
     }
@@ -154,16 +160,15 @@ class Mail implements MailInterface, IteratorAggregate
     {
         $this->inbox = array();
         $this->msg_cnt = 0;
-        try {
+        if ($this->conn) {
             imap_close($this->conn);
-        } catch (Error $error) {
+        } else {
             $this->logger->error('no connection to mail server');
         }
-
     }
 
     /**
-     * @return iterable
+     * @return ArrayIterator
      */
     public function getIterator(): iterable
     {
@@ -184,30 +189,10 @@ class Mail implements MailInterface, IteratorAggregate
      */
     public function getMail(int $msg_index): stdClass
     {
-        $return = new stdClass;
+        $return = new stdClass();
         if (count($this->inbox) >= $msg_index) {
             $return = $this->inbox[$msg_index];
         }
         return $return;
     }
-
-    /**
-     * @param int $msg_index
-     * @return bool
-     */
-    public function setForDelete(int $msg_index): bool
-    {
-        return imap_delete($this->conn, $msg_index);
-    }
-
-    /**
-     * @return bool
-     */
-    public function deleteMessages(): bool
-    {
-        $result = imap_expunge($this->conn);
-        $this->fillInbox();
-        return $result;
-    }
-
 }
