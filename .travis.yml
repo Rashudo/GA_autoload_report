@@ -2,9 +2,11 @@ language: php
 
 php:
   - "7.4"
+before_script:
+  cd ./www/
 
 install:
   - composer install
 
 script:
-  - ./www/vendor/bin/phpcs
+  - ./vendor/bin/phpcs
