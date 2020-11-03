@@ -20,7 +20,7 @@ final class LogBuilder implements LogBuilderInterface
     /**
      * @var LoggerInterface
      */
-    private ?LoggerInterface $logModel = null;
+    private LoggerInterface $logModel;
 
     /**
      * @return LoggerInterface
@@ -29,7 +29,6 @@ final class LogBuilder implements LogBuilderInterface
     {
         return $this->logModel;
     }
-
 
     /**
      * @return self
@@ -40,7 +39,6 @@ final class LogBuilder implements LogBuilderInterface
 
         return $this;
     }
-
 
     /**
      * @return self
