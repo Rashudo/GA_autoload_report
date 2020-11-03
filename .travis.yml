@@ -1,0 +1,12 @@
+language: php
+
+php:
+  - "7.4"
+  
+before_install: cd www
+
+install:
+  - composer install
+
+script:
+  - ./vendor/bin/phpcs
