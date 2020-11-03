@@ -4,3 +4,4 @@
 /.idea/
 /www/composer.lock
 /.phpunit.result.cache
+/lsp/
