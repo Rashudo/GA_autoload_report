@@ -5,11 +5,8 @@ namespace Crm_Getter;
 use Crm_Getter\Classes\CrmDataLoad;
 use Crm_Getter\Classes\CrmParse;
 use Crm_Getter\Classes\DbConnect\DoctrineHandler;
-use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Classes\Mail;
 use Exception;
-use Psr\Log\LoggerInterface;
-use stdClass;
 
 /**
  * Class App
@@ -46,14 +43,14 @@ class App
                             }
                         }
                     }
-                    //$mailer->setForDelete($elem->index);
+                    $mailer->setForDelete($elem->index);
                 }
                 if (count($complete) > 0) {
                     $results = $dataLoader->saveDataSet($complete);
                 }
                 if (!(!$results || in_array(0, $results))) {
                     echo 'Сохранено';
-                    //$mailer->deleteMessages();
+                    $mailer->deleteMessages();
                 } else {
                     echo 'Не сохранено';
                 }
