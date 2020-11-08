@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Tools\Setup;
+use Error;
 use Psr\Log\LoggerInterface;
 
 class DoctrineHandler implements DbInterface
@@ -28,7 +29,7 @@ class DoctrineHandler implements DbInterface
      */
     public function __construct()
     {
-        $this->logger = $this->logger = LogManager::getLogger();
+        $this->logger = LogManager::getLogger();
 
         $paths = array("/var/www/app/src");
         $dbParams = array(
@@ -57,7 +58,7 @@ class DoctrineHandler implements DbInterface
             $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
         } catch (ORMException $e) {
             $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
-        } catch (\Error $e) {
+        } catch (Error $e) {
             $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
             die('ORM Error ' . $e);
         }

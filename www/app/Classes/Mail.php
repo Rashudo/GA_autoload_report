@@ -48,7 +48,7 @@ class Mail implements MailInterface, IteratorAggregate
      */
     public function __construct()
     {
-        $this->logger = $this->logger = LogManager::getLogger();
+        $this->logger = LogManager::getLogger();
         try {
             $this->connect();
         } catch (Error $error) {
@@ -194,5 +194,24 @@ class Mail implements MailInterface, IteratorAggregate
             $return = $this->inbox[$msg_index];
         }
         return $return;
+    }
+
+    /**
+     * @param int $msg_index
+     * @return bool
+     */
+    public function setForDelete(int $msg_index): bool
+    {
+        return imap_delete($this->conn, $msg_index);
+    }
+
+    /**
+     * @return bool
+     */
+    public function deleteMessages(): bool
+    {
+        $result = imap_expunge($this->conn);
+        $this->fillInbox();
+        return $result;
     }
 }

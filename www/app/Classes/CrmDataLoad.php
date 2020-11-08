@@ -32,7 +32,7 @@ class CrmDataLoad
     public function __construct(DbInterface $dbHandler)
     {
         $this->db = $dbHandler;
-        $this->logger = $this->logger = LogManager::getLogger();
+        $this->logger = LogManager::getLogger();
     }
 
     /**
