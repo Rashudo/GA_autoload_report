@@ -44,14 +44,14 @@ class App
                             }
                         }
                     }
-                    //$mailer->setForDelete($elem->index);
+                    $mailer->setForDelete($elem->index);
                 }
                 if (count($complete) > 0) {
                     $results = $dataLoader->saveDataSet($complete);
                 }
                 if (!(!$results || in_array(0, $results))) {
                     echo 'Сохранено';
-                    //$mailer->deleteMessages();
+                    $mailer->deleteMessages();
                 } else {
                     echo 'Не сохранено';
                 }
