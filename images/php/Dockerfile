@@ -17,6 +17,18 @@ RUN apt-get install -y libc-client-dev libkrb5-dev && \
 
 RUN docker-php-ext-install pdo pdo_mysql mysqli
 
+
+
+RUN apt-get install -y libpng-dev zlib1g-dev libzip-dev
+
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-install zip
+RUN docker-php-ext-install gd
+
+
+
+
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /var/www

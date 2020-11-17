@@ -32,7 +32,6 @@ class CrmDataLoad
     public function __construct(DbInterface $dbHandler)
     {
         $this->db = $dbHandler;
-        $this->logger = LogManager::getLogger();
     }
 
     /**
@@ -43,18 +42,13 @@ class CrmDataLoad
     public function saveDataSet(array $data): array
     {
         $results = [];
-        try {
-            foreach ($data as $line) {
-                $obj = new Crm();
-                $obj->setOrderId($line['order_id']);
-                $obj->setChannel($line['channel']);
-                $obj->setAdv($line['adv']);
-                $this->db->saveData($obj);
-                $results[] = $obj->getOrderId() > 0;
-            }
-        } catch (Exception $e) {
-            $this->logger->error('Class = ' . __CLASS__ . '. Line = ' . __LINE__ . ' Error = ' . $e);
-            die($e->getMessage());
+        foreach ($data as $line) {
+            $obj = new Crm();
+            $obj->setOrderId($line['order_id']);
+            $obj->setChannel($line['channel']);
+            $obj->setAdv($line['adv']);
+            $this->db->saveData($obj);
+            $results[] = $obj->getOrderId() > 0;
         }
         return $results;
     }
