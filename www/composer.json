@@ -17,7 +17,8 @@
     "ext-pdo": "*",
     "psr/log": "*",
     "doctrine/orm": "*",
-    "ext-imap": "*"
+    "ext-imap": "*",
+    "phpoffice/phpspreadsheet": "^1.15"
   },
   "require-dev": {
     "phpunit/phpunit": "*",

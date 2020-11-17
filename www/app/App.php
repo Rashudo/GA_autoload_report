@@ -5,6 +5,7 @@ namespace Crm_Getter;
 use Crm_Getter\Classes\CrmDataLoad;
 use Crm_Getter\Classes\CrmParse;
 use Crm_Getter\Classes\DbConnect\DoctrineHandler;
+use Crm_Getter\Classes\Logger\LogManager;
 use Crm_Getter\Classes\Mail;
 use Exception;
 
@@ -24,19 +25,19 @@ class App
         $mailer = new Mail();
         if ($mailer->status) {
             try {
+                $logger = LogManager::getLogger();
                 $parser = new CrmParse();
-                $dataLoader = new CrmDataLoad(new DoctrineHandler());
+                $dataLoader = new CrmDataLoad(new DoctrineHandler($logger));
                 $complete = [];
                 $results = [];
-
                 foreach ($mailer->getIterator() as $elem) {
                     if (
                         isset($elem->header->fromaddress)
                         && $elem->header->fromaddress === getenv('FROM_ADDRESS')
                         && count($elem->attachments) > 0
                     ) {
-                        if (isset($elem->attachments[0])) {
-                            $parser->setData($elem->attachments[0]);
+                        foreach ($elem->attachments as $fileName) {
+                            $parser->setData($fileName);
                             $data_set = $parser->getDataSet();
                             if (count($data_set) > 0) {
                                 $complete = array_merge($complete, $data_set);
@@ -55,7 +56,11 @@ class App
                     echo 'Не сохранено';
                 }
             } catch (Exception $e) {
-                die('Error => ' . $e);
+                $logger->error('Class = ' . __CLASS__
+                    . '. Line = ' . __LINE__
+                    . ' OptimisticLockException = ' . $e->getMessage());
+            } catch (\Error $error) {
+                die($error->getMessage());
             }
         } else {
             die('No connection to mail server');

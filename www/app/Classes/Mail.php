@@ -52,7 +52,7 @@ class Mail implements MailInterface, IteratorAggregate
         try {
             $this->connect();
         } catch (Error $error) {
-            $this->logger->notice('no connection to mail server');
+            //$this->logger->notice('no connection to mail server');
         }
         if (is_resource($this->conn)) {
             $this->setCnt(imap_num_msg($this->conn));
@@ -124,7 +124,9 @@ class Mail implements MailInterface, IteratorAggregate
                                 } elseif ($mail->structure->parts[$i]->encoding == 4) {
                                     $attachment = quoted_printable_decode($attachment);
                                 }
-                                $mail->attachments[] = $attachment;
+                                $fileName = '../upload/' . time() . '.xlsx';
+                                file_put_contents($fileName, $attachment);
+                                $mail->attachments[] = $fileName;
                             }
                             ++$i;
                         }
@@ -163,7 +165,7 @@ class Mail implements MailInterface, IteratorAggregate
         if ($this->conn) {
             imap_close($this->conn);
         } else {
-            $this->logger->error('no connection to mail server');
+            //$this->logger->error('no connection to mail server');
         }
     }
 
